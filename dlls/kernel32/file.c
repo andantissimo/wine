@@ -1096,6 +1096,9 @@ BOOL WINAPI SetFileInformationByHandle( HANDLE file, FILE_INFO_BY_HANDLE_CLASS c
     switch (class)
     {
     case FileBasicInfo:
+        status = NtSetInformationFile( file, &io, info, size, FileBasicInformation );
+        break;
+
     case FileNameInfo:
     case FileRenameInfo:
     case FileAllocationInfo:

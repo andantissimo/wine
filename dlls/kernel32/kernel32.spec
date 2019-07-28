@@ -850,7 +850,7 @@
 @ stdcall GetThreadErrorMode()
 @ stdcall GetThreadGroupAffinity(long ptr)
 @ stdcall GetThreadId(ptr)
-# @ stub GetThreadIdealProcessorEx
+@ stdcall GetThreadIdealProcessorEx(long ptr)
 @ stdcall GetThreadIOPendingFlag(long ptr)
 @ stdcall GetThreadLocale()
 @ stdcall GetThreadPreferredUILanguages(long ptr ptr ptr)

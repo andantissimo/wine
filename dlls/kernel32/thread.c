@@ -520,6 +520,16 @@ DWORD WINAPI SetThreadIdealProcessor(
 }
 
 /***********************************************************************
+ *              GetThreadIdealProcessorEx (KERNEL32.@)
+ */
+BOOL WINAPI GetThreadIdealProcessorEx( HANDLE thread, PROCESSOR_NUMBER *ideal )
+{
+    FIXME("(%p, %p): stub\n", thread, ideal);
+    SetLastError(ERROR_CALL_NOT_IMPLEMENTED);
+    return FALSE;
+}
+
+/***********************************************************************
  *              SetThreadIdealProcessorEx (KERNEL32.@)
  */
 BOOL WINAPI SetThreadIdealProcessorEx( HANDLE thread, PROCESSOR_NUMBER *ideal, PROCESSOR_NUMBER *previous )

@@ -1916,12 +1916,12 @@ static NTSTATUS set_file_times( int fd, const LARGE_INTEGER *mtime, const LARGE_
 
     tv[0].tv_sec = tv[1].tv_sec = 0;
     tv[0].tv_nsec = tv[1].tv_nsec = UTIME_OMIT;
-    if (atime->QuadPart)
+    if (atime->QuadPart != 0 && atime->QuadPart != -1 && atime->QuadPart != -2)
     {
         tv[0].tv_sec = atime->QuadPart / 10000000 - SECS_1601_TO_1970;
         tv[0].tv_nsec = (atime->QuadPart % 10000000) * 100;
     }
-    if (mtime->QuadPart)
+    if (mtime->QuadPart != 0 && mtime->QuadPart != -1 && mtime->QuadPart != -2)
     {
         tv[1].tv_sec = mtime->QuadPart / 10000000 - SECS_1601_TO_1970;
         tv[1].tv_nsec = (mtime->QuadPart % 10000000) * 100;
@@ -1932,7 +1932,8 @@ static NTSTATUS set_file_times( int fd, const LARGE_INTEGER *mtime, const LARGE_
     struct timeval tv[2];
     struct stat st;
 
-    if (!atime->QuadPart || !mtime->QuadPart)
+    if (atime->QuadPart == 0 || atime->QuadPart == -1 || atime->QuadPart == -2 ||
+        mtime->QuadPart == 0 || mtime->QuadPart == -1 || mtime->QuadPart == -2)
     {
 
         tv[0].tv_sec = tv[0].tv_usec = 0;
@@ -1953,12 +1954,12 @@ static NTSTATUS set_file_times( int fd, const LARGE_INTEGER *mtime, const LARGE_
 #endif
         }
     }
-    if (atime->QuadPart)
+    if (atime->QuadPart != 0 && atime->QuadPart != -1 && atime->QuadPart != -2)
     {
         tv[0].tv_sec = atime->QuadPart / 10000000 - SECS_1601_TO_1970;
         tv[0].tv_usec = (atime->QuadPart % 10000000) / 10;
     }
-    if (mtime->QuadPart)
+    if (mtime->QuadPart != 0 && mtime->QuadPart != -1 && mtime->QuadPart != -2)
     {
         tv[1].tv_sec = mtime->QuadPart / 10000000 - SECS_1601_TO_1970;
         tv[1].tv_usec = (mtime->QuadPart % 10000000) / 10;
@@ -2513,12 +2514,17 @@ NTSTATUS WINAPI NtSetInformationFile(HANDLE handle, PIO_STATUS_BLOCK io,
         {
             struct stat st;
             const FILE_BASIC_INFORMATION *info = ptr;
+            const LARGE_INTEGER *atime = &info->LastAccessTime;
+            const LARGE_INTEGER *mtime = &info->LastWriteTime;
 
             if ((io->u.Status = server_get_unix_fd( handle, 0, &fd, &needs_close, NULL, NULL )))
                 return io->u.Status;
 
-            if (info->LastAccessTime.QuadPart || info->LastWriteTime.QuadPart)
-                io->u.Status = set_file_times( fd, &info->LastWriteTime, &info->LastAccessTime );
+            if (atime->QuadPart != 0 && atime->QuadPart != -1 && atime->QuadPart != -2 ||
+                mtime->QuadPart != 0 && mtime->QuadPart != -1 && mtime->QuadPart != -2)
+            {
+                io->u.Status = set_file_times( fd, mtime, atime );
+            }
 
             if (io->u.Status == STATUS_SUCCESS && info->FileAttributes)
             {

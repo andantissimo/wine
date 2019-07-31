@@ -7135,15 +7135,6 @@ int WINAPI GetAddrInfoExOverlappedResult(OVERLAPPED *overlapped)
 }
 
 /***********************************************************************
- *		GetAddrInfoExCancel     (WS2_32.@)
- */
-int WINAPI GetAddrInfoExCancel(HANDLE *handle)
-{
-    FIXME("(%p)\n", handle);
-    return WSA_INVALID_HANDLE;
-}
-
-/***********************************************************************
  *		GetAddrInfoW		(WS2_32.@)
  */
 int WINAPI GetAddrInfoW(LPCWSTR nodename, LPCWSTR servname, const ADDRINFOW *hints, PADDRINFOW *res)
